@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create ReadOnly policy and Viewer role
+
+Resources:
+  ReadOnlyPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: ReadOnlyViewerPolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: 
+              - 'ec2:Describe*'
+              - 's3:List*'
+              - 's3:Get*'
+              - 'iam:Get*'
+              - 'iam:List*'
+            Resource: '*'
+
+  ViewerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ViewerRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::963627010405:user/ViewerUser
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - !Ref ReadOnlyPolicy
